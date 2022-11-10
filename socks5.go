@@ -27,7 +27,8 @@ type Config struct {
 	Credentials CredentialStore
 
 	// Resolver can be provided to do custom name resolution.
-	// Defaults to DNSResolver if not provided.
+	// Set this to DNSResolver to handle name resolution on the server.
+	// Leave as nil to pass FQDN requests to the dialler
 	Resolver NameResolver
 
 	// Rules is provided to enable custom logic around permitting
@@ -66,11 +67,6 @@ func New(conf *Config) (*Server, error) {
 		} else {
 			conf.AuthMethods = []Authenticator{&NoAuthAuthenticator{}}
 		}
-	}
-
-	// Ensure we have a DNS resolver
-	if conf.Resolver == nil {
-		conf.Resolver = DNSResolver{}
 	}
 
 	// Ensure we have a rule set
