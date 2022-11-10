@@ -119,9 +119,9 @@ func NewRequest(bufConn io.Reader) (*Request, error) {
 func (s *Server) handleRequest(req *Request, conn conn) error {
 	ctx := context.Background()
 
-	// Resolve the address if we have a FQDN
+	// Resolve the address if configured to handle resolution, and we have a FQDN
 	dest := req.DestAddr
-	if dest.FQDN != "" {
+	if s.config.Resolver != nil && dest.FQDN != "" {
 		ctx_, addr, err := s.config.Resolver.Resolve(ctx, dest.FQDN)
 		if err != nil {
 			if err := sendReply(conn, hostUnreachable, nil); err != nil {
